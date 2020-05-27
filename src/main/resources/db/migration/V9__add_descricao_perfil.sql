@@ -1,0 +1,1 @@
+alter table seguranca.perfil add column descricao varchar(200);

@@ -1,0 +1,1 @@
+ALTER TABLE administracao.pessoa ALTER COLUMN cpf TYPE VARCHAR;
