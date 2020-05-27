@@ -1,0 +1,85 @@
+stages:
+  - build
+  - release
+  - deploy
+
+build:
+  stage: build
+  image: gradle:jdk8
+  dependencies: []
+  script:
+    - gradle dockerClean
+    - gradle build -x test
+    - gradle unpack
+    - gradle dockerPrepare
+  artifacts:
+    expire_in: 1h
+    paths:
+      - build/
+  only:
+    - tags
+  except:
+    - branches
+
+
+docker:publish:
+  stage: release
+  image: docker:19
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:19-dind
+  before_script:
+    - 'case $CI_COMMIT_TAG in *test) export DOCKER_TAG=test;; *) export DOCKER_TAG=latest;; esac'
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker build --pull -t registry.gitlab.com/$CI_PROJECT_PATH:$DOCKER_TAG ./build/docker
+    - docker tag registry.gitlab.com/$CI_PROJECT_PATH:$DOCKER_TAG registry.gitlab.com/$CI_PROJECT_PATH:$CI_COMMIT_TAG
+    - docker push registry.gitlab.com/$CI_PROJECT_PATH:$DOCKER_TAG
+    - docker push registry.gitlab.com/$CI_PROJECT_PATH:$CI_COMMIT_TAG
+  only:
+    - tags
+  except:
+    - branches
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get install -qq git
+    - 'which ssh-agent || (apt-get install -qq openssh-client)'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh $SSH_HOST "$DEPLOY_CMD"
+  environment:
+    name: prod
+    url: https://focus.r4s.services
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG !~ /test$/
+  except:
+    - branches
+
+deploy-test:
+  stage: deploy
+  script:
+    - apt-get install -qq git
+    - 'which ssh-agent || (apt-get install -qq openssh-client)'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY_TEST")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh $SSH_HOST_TEST "$DEPLOY_CMD_TEST"
+  environment:
+    name: test
+    url: https://focus-testes.r4s.services
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /test$/
+  except:
+    - master
