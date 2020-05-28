@@ -2,10 +2,13 @@ package br.com.r4s.adm.colaborador.dominio;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -33,7 +36,11 @@ public class Colaborador implements Serializable {
 	@SequenceGenerator(name="colaborador_sequence_generator", sequenceName="administracao.colaborador_sequence", allocationSize=1)
     private Long id;
 	
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="id_pessoa")
 	private Pessoa pessoa;
 	
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="id_empresa")
 	private Empresa empresa;
 }	

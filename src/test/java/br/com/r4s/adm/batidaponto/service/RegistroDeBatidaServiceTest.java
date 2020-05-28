@@ -15,11 +15,11 @@ import br.com.r4s.adm.colaborador.dominio.Colaborador;
 @RunWith(SpringRunner.class)
 public class RegistroDeBatidaServiceTest {
 
-	private RegistroDeBatidaService service;
+	private BatidaPontoService service;
 	
 	@Before
 	public void setUp() {
-		service = new RegistroDeBatidaService();
+		service = new BatidaPontoService();
 	}
 	
 	@Test
