@@ -31,7 +31,6 @@ public class BatidaPontoController {
 	public ResponseEntity<BatidaPonto> cadastrar(@RequestBody Colaborador colaborador) {
 		
 		Date horaBatida = new Date();
-		
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.registrarBatidaSimples(colaborador, horaBatida));
 	}
 }
