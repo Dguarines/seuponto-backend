@@ -30,8 +30,14 @@ public class RegistroDeBatidaServiceTest {
 											 .id(1L)
 											 .build();
 		
+		BatidaPonto batidaPonto = BatidaPonto.builder()
+											 .id(1L)
+											 .colaborador(colaborador)
+											 .horaBatida(agora)
+											 .build();
+		
 		//Acao
-		BatidaPonto batida = service.registrarBatidaSimples(colaborador, agora);
+		BatidaPonto batida = service.registrarBatidaSimples(batidaPonto);
 		
 		//Validação
 		Assert.assertEquals(Long.valueOf(1L), batida.getColaborador().getId());
