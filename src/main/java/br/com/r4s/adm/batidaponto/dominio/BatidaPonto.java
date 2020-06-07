@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import br.com.r4s.adm.arq.dominio.Endereco;
 import br.com.r4s.adm.colaborador.dominio.Colaborador;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,4 +44,8 @@ public class BatidaPonto implements Serializable {
 	
 	@Column(name = "hora_batida")
 	public Date horaBatida; 
+	
+	@OneToOne
+	@JoinColumn(name="id_endereco")
+	public Endereco endereco;
 }

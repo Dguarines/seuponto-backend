@@ -1,5 +1,6 @@
 package br.com.r4s.adm.batidaponto.dominio;
 
+import br.com.r4s.adm.arq.dominio.Endereco;
 import br.com.r4s.adm.colaborador.dominio.Colaborador;
 import lombok.Data;
 
@@ -10,5 +11,7 @@ public class BatidaPontoRequest {
 		
 	public Colaborador colaborador;
 		
-	public String horaBatida; 
+	public String horaBatida;
+	
+	public Endereco endereco;
 }

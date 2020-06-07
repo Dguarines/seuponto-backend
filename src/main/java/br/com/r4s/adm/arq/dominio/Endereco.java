@@ -34,6 +34,10 @@ public class Endereco implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="endereco_sequence_generator")
 	@SequenceGenerator(name="endereco_sequence_generator", sequenceName="administracao.endereco_sequence", allocationSize=1)
     private Long id;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_municipio")
+    private Municipio municipio;
 
     @Column(name = "cep", length = 10)
     private String cep;
@@ -50,7 +54,6 @@ public class Endereco implements Serializable {
     @Column(name = "numero", length = 16)
     private String numero;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_municipio")
-    private Municipio municipio;
+    @Column(name= "geocode")
+    private String geocode;    
 }

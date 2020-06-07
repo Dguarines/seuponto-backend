@@ -15,6 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import br.com.r4s.adm.arq.dominio.Endereco;
+import br.com.r4s.adm.empresa.dominio.Empresa;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -63,6 +64,7 @@ public class Pessoa implements Serializable {
     @Column(name = "profissao", length = 256)
     private String profissao;
 
-    @Column(name = "empresa", length = 256)
-    private String empresa;
+    @OneToOne
+    @JoinColumn(name="id_empresa")
+    private Empresa empresa;
 }

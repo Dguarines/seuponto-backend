@@ -34,4 +34,6 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Long> {
             nativeQuery = true
       )
       public List<MunicipioResponse> findByIdEstado(@Param("idEstado") Long idEstado);
+      
+      public Municipio findByNome(String nome);
 }
