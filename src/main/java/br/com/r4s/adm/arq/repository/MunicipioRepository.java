@@ -35,5 +35,15 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Long> {
       )
       public List<MunicipioResponse> findByIdEstado(@Param("idEstado") Long idEstado);
       
-      public Municipio findByNome(String nome);
+      @Query(
+		  value = " SELECT m " + 
+                  " FROM Municipio m " +
+                  " WHERE m.nome = :nome " +
+                  " and m.unidadeFederativa.sigla = :sigla " +
+                  " ORDER BY m.nome"
+        )
+      public Municipio findByNomeAndSigla(@Param("nome") String nome,@Param("sigla") String sigla);
+      
+      
+      
 }

@@ -1,11 +1,13 @@
 package br.com.r4s.adm.batidaponto.controller;
 
-import java.util.Date;
+import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,15 +44,14 @@ public class BatidaPontoController {
 		return "OK";
 	}
 	
-	@SuppressWarnings("deprecation")
 	@PostMapping("/batida")
 	public ResponseEntity<BatidaPonto> cadastrar(@RequestBody BatidaPontoRequest batidaPonto) {
-		
-		Date horaBatida = new Date(batidaPonto.getHoraBatida());
+				
+		DateTime dt = new DateTime();
 		
 		Colaborador colaborador = repository.findById(batidaPonto.getColaborador().getId()).get();
 		
-		Municipio municipio = municipioRepository.findByNome(batidaPonto.getEndereco().getMunicipio().getNome());
+		Municipio municipio = municipioRepository.findByNomeAndSigla(batidaPonto.getEndereco().getMunicipio().getNome(), batidaPonto.getEndereco().getMunicipio().getUnidadeFederativa().getSigla());
 		
 		batidaPonto.getEndereco().setMunicipio(municipio);
 		
@@ -59,10 +60,16 @@ public class BatidaPontoController {
 		BatidaPonto ponto = BatidaPonto.builder()
 									   .id(batidaPonto.getId())
 									   .colaborador(colaborador)
-									   .horaBatida(horaBatida)
+									   .horaBatida(dt.toDate())
 									   .endereco(endereco)
 									   .build();
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.registrarBatidaSimples(ponto));
+	}
+		
+	@GetMapping("/pessoa/{id}")
+	public ResponseEntity<List<BatidaPonto>> batidasDoDia(@PathVariable(required = true) Long id){
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.buscarBatidasDoDiaPorIdPessoa(id));
 	}
 }

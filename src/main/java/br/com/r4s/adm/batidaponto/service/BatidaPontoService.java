@@ -1,5 +1,7 @@
 package br.com.r4s.adm.batidaponto.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class BatidaPontoService {
 	
 	public BatidaPonto registrarBatidaSimples(BatidaPonto batidaPonto) {		
 		return repository.save(batidaPonto);
+	}
+	
+	public List<BatidaPonto> buscarBatidasDoDiaPorIdPessoa(Long id){
+		return repository.buscarListaDeBatidasDeHojePorIdPessoa(id);
 	}
 }
